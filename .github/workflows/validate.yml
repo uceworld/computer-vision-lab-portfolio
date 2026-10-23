@@ -13,14 +13,15 @@ jobs:
         with:
           python-version: "3.12"
       - name: Validate notebook JSON if present
-        shell: python
         run: |
+          python - <<'PY'
           import json
           from pathlib import Path
           notebooks = list(Path(".").rglob("*.ipynb"))
           for path in notebooks:
               json.loads(path.read_text(encoding="utf-8"))
           print(f"Validated {len(notebooks)} notebook JSON files.")
+          PY
       - name: Reject common secret files
         run: |
           test -z "$(find . -type f \( -name '.env' -o -name '*.pem' -o -name '*.key' \) -not -path './.git/*' -print)"
